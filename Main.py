@@ -41,6 +41,20 @@ run = True
 
 #List to store questions
 
+question_bank = ["Who was the first woman to fly solo across the Atlantic Ocean?", "What biological order do frogs belong to?", "What is your body's largest organ?", "What does GDP stand for?"]
+answer_bank = ["amelia Earhart", "amphibians", "skin", "gross domestic product"]
+
+
+
+def generate_question():
+    index = random.randint(0, len(question_bank) - 1)
+
+    return question_bank[index]
+
+
+
+
+
 
 
 
@@ -87,10 +101,12 @@ while run:
 
 
 
-
-    test_text = font1.render("Which continent is the largest?", True, modern3)
+    
+    test_text = font1.render(generate_question(), True, modern3)
     window.blit(test_text, (150, 50))
     clock.tick(60)
+
+        
     pygame.display.update()
     
 
