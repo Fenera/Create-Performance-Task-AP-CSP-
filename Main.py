@@ -55,19 +55,22 @@ answer_bank = ["amelia Earhart", "amphibians", "skin", "gross domestic product"]
 
 
 def check_correct(question, response):
-    if(quest_ans[quest_ans] == response.capitalize()):
+    if(quest_ans[question] == response.capitalize()):
         return True
+    
+def question_present():
+    pass
 
 
 
 
 
-def display_text(text_display):
+def display_text(text_display, x, y, size):
     while True:
     #background color
         window.fill(sand)
-        new_text = pygame.font.SysFont("arial", 100).render(f"Your Answer: {text_display}", True, "black")
-        new_text_rect = new_text.get_rect(center = (length/2, height/2))
+        new_text = pygame.font.SysFont("arial", size).render(f"Your Answer: {text_display}", True, "black")
+        new_text_rect = new_text.get_rect(center = (x ,y))
 
         window.blit(new_text, new_text_rect)
         clock.tick(60)
@@ -98,9 +101,9 @@ while run:
             run = False
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
             if(check_correct("What is the capital of Kenya?", event.text)):
-                display_text("Correct!! +1 point")
+                display_text("Correct!! +1 point", 500, 300, 25)
             else:
-                display_text("Incorrect!! The correct answer is 'Nairobi'")
+                display_text("Incorrect!! The correct answer is 'Nairobi'",200, 300, 25 )
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
