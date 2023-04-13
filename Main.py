@@ -4,7 +4,13 @@ import random
 import pygame_gui
 from Question import quest_ans
 
-
+#goals: get font to be corrected for each text placed on screen
+#clean up code and create comments
+#possibly a menu page
+#scoreboard
+#timer
+#extraneous
+#complete by 4/25
 
 pygame.init()
 #pygame.font.init()
@@ -45,6 +51,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((150, 200), (700, 50)), manager = manager, object_id = "#main_text_entry")
+
 run = True
 
 
@@ -60,6 +67,14 @@ def check_correct(question, response):
     
 def question_present():
     pass
+
+def get_fitting_size(text):
+    text_render = font1.render(text, True, modern3)
+    rect_of_text = text_render.get_rect()
+    text_width = rect_of_text.width
+    while text_width > length - 100:
+        text_width -= 20 #decreases the size of the font every iteration(until the right size)
+    return text_width
 
 
 
@@ -83,6 +98,9 @@ def display_text(text_display, x, y, size):
 
 
 
+question_index = 0
+list_of_questions = list(quest_ans.keys())
+
 while run:
 
     refreshrate_ui = clock.tick(60)/750 #The /750 controls how fast the cursor blinks
@@ -91,19 +109,23 @@ while run:
     #Refresh rate for UI
     #UI_RR = clock.tick(60)/1000
 
-    test_text = font1.render("What is the capital of Kenya?", True, modern3)
-    window.blit(test_text, (150, 50))
+    current_question = list_of_questions[question_index]
+    size_of_question = get_fitting_size(current_question)
+
+    question_on_screen = font1.render(current_question, True, modern3)
+    window.blit(question_on_screen, (150, 50))
     clock.tick(60)
+    
 
     for event in pygame.event.get():
         #Program ends when 'x' pressed
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
-            if(check_correct("What is the capital of Kenya?", event.text)):
+            if(check_correct(current_question, event.text)):
                 display_text("Correct!! +1 point", 500, 300, 25)
             else:
-                display_text("Incorrect!! The correct answer is 'Nairobi'",200, 300, 25 )
+                display_text(f"Incorrect!! The correct answer is {quest_ans[current_question]}",500, 300, 25 )
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
