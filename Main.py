@@ -73,7 +73,8 @@ def get_fitting_size(text):
     rect_of_text = text_render.get_rect()
     text_width = rect_of_text.width
     while text_width > length - 100:
-        text_width -= 20 #decreases the size of the font every iteration(until the right size)
+        text_width -= 15
+    
     return text_width
 
 
@@ -98,14 +99,17 @@ def display_text(text_display, x, y, size):
 
 
 
-question_index = 0
+question_index = 3
 list_of_questions = list(quest_ans.keys())
+question_answered = False
+color_index = 0
+
 
 while run:
 
     refreshrate_ui = clock.tick(60)/750 #The /750 controls how fast the cursor blinks
     #background color
-    window.fill(sand)
+    
     #Refresh rate for UI
     #UI_RR = clock.tick(60)/1000
 
@@ -124,11 +128,29 @@ while run:
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
             if(check_correct(current_question, event.text)):
                 display_text("Correct!! +1 point", 500, 300, 25)
+                question_answered = True
+
             else:
-                display_text(f"Incorrect!! The correct answer is {quest_ans[current_question]}",500, 300, 25 )
+                display_text(f"Incorrect!! The correct answer is '{quest_ans[current_question]}'", 500, 300, 25 )
+                question_answered = True
+                
+
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
+
+    if(question_answered):
+        if(question_index < len(list_of_questions) - 1):
+            question_index += 1
+        else:
+            question_index = 0
+    if(color_index < len(colors) - 1):
+        color_index += 1
+    else:
+        color_index = 0
+    
+    window.fill(colors[color_index])
+    
 
     manager.update(refreshrate_ui)
 
