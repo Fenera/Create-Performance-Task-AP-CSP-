@@ -99,25 +99,33 @@ def display_text(text_display, x, y, size):
 
 
 
-question_index = 3
+question_index = 0
 list_of_questions = list(quest_ans.keys())
 question_answered = False
 color_index = 0
+number_correct = 0
+number_incorrect = 0
 
 
 while run:
 
     refreshrate_ui = clock.tick(60)/750 #The /750 controls how fast the cursor blinks
     #background color
-    
+    window.fill(sand)
+
     #Refresh rate for UI
     #UI_RR = clock.tick(60)/1000
 
     current_question = list_of_questions[question_index]
     size_of_question = get_fitting_size(current_question)
 
-    question_on_screen = font1.render(current_question, True, modern3)
-    window.blit(question_on_screen, (150, 50))
+    correct_score = font1.render("Number Correct: " + str(number_correct), True, black)
+    incorrect_score = font1.render("Number Incorrect: " + str(number_incorrect), True, black)
+    window.blit(correct_score, (0,0))
+    window.blit(incorrect_score, (0, 35))
+
+    question_on_screen = font1.render(current_question, True, black)
+    window.blit(question_on_screen, (130, 120))
     clock.tick(60)
     
 
@@ -127,30 +135,32 @@ while run:
             run = False
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
             if(check_correct(current_question, event.text)):
-                display_text("Correct!! +1 point", 500, 300, 25)
+                
+                #display_text("Correct!! +1 point", 500, 300, 25)
+
+                #Makes the textbox empty 
+                text_input.set_text("")
                 question_answered = True
+                number_correct += 1
 
             else:
-                display_text(f"Incorrect!! The correct answer is '{quest_ans[current_question]}'", 500, 300, 25 )
+                #display_text(f"Incorrect!! The correct answer is '{quest_ans[current_question]}'", 500, 300, 25 )
                 question_answered = True
+                text_input.set_text("")
+                number_incorrect += 1
                 
-
+            if(question_index < len(list_of_questions) - 1):
+                question_index += 1
+            else:
+                run = False
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
 
-    if(question_answered):
-        if(question_index < len(list_of_questions) - 1):
-            question_index += 1
-        else:
-            question_index = 0
-    if(color_index < len(colors) - 1):
-        color_index += 1
-    else:
-        color_index = 0
     
-    window.fill(colors[color_index])
+
     
+
 
     manager.update(refreshrate_ui)
 
@@ -160,6 +170,7 @@ while run:
 
     
     
+      
 
         
     pygame.display.update()
