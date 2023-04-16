@@ -1,9 +1,10 @@
-
-quest_ans = {"Who was the first woman to fly solo across the Atlantic Ocean?": "Amelia Earhart",
+quest_ans = {"Who was the first human to step on the Moon?": "Neil Armstrong",
             "What is the capital of Italy?": "Rome",
              "What does WWW stand for in a website browser": "World wide web",
-             "What is the capital of Kenya?": "Nairobi"}
-
-
-
-
+             "What is the capital of Kenya?": "Nairobi",
+             "How many elements are in the periodic table?": "118",
+             "What is the longest river in the world?":"Nile",
+             "What is the hardest natural substance in the world?": "Diamond",
+             "What is the longest bone in the human body?": "Femur",
+             "Which planet is closest to Earth?":"Mercury",
+             "Which continent has the most countries?": "Africa"}
