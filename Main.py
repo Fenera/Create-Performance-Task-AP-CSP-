@@ -60,9 +60,13 @@ clock = pygame.time.Clock()
 FPS = 60
 
 
+list_of_answers = ["(a)Come to a complete stop | (b)Yield to oncoming traffic | (c)Drive through the intersection",
+                   "(a)Drive through with caution | (b)Do not attempt to drive through it | (c)Drive through quickly",
+                   "(a)30mph | (b)25mph | (c)20mph"]
 
 
-text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((150, 200), (700, 50)), manager = manager, object_id = "#main_text_entry")
+
+text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((70, 300), (700, 50)), manager = manager, object_id = "#main_text_entry")
 
 
 def check_correct(question, response):
@@ -106,6 +110,8 @@ number_correct = 0
 number_incorrect = 0
 lives = 3
 run = True
+test_if_end = False
+list_ans_index = 0
 
 while run:
     
@@ -114,7 +120,7 @@ while run:
     #Turquoise colored heading. Parameters = pygame.draw.rect(screen, [red, blue, green], [left, top, width, height], filled)
     turq_rect = pygame.draw.rect(window, r_gray, (0,0, length, 65), 0)
     #Title
-    text_title = font1.render("Trivia Quest", True, black)
+    text_title = font1.render("Driving for Dummies", True, black)
     window.blit(text_title, (length//2 - length//4.4, 6))
 
 
@@ -138,7 +144,9 @@ while run:
     window.blit(lives_display, (5, 5))
 
     question_on_screen = font3.render(current_question, True, black)
-    window.blit(question_on_screen, (130, 120))
+    answers_on_screen = font2.render(list_of_answers[list_ans_index], True, black)
+    window.blit(answers_on_screen, (70, 200))
+    window.blit(question_on_screen, (70, 120))
     clock.tick(60)
     
 
@@ -146,6 +154,11 @@ while run:
         #Program ends when 'x' pressed
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    test_if_end = True
+                    run = False
+       
         if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
             if(check_correct(current_question, event.text)):
                 #Makes the textbox empty 
@@ -168,23 +181,30 @@ while run:
                 question_answered = True
 
             if(lives <= 0):
+                test_if_end = True
                 lives = 0
-                display_text("You Lost! Click 'retry' for another go or 'x' to exit!", 500, 300, 30)
-                time.sleep(3)    
+                window.fill(sand)
+                display_text("You Lost!", 500, 300, 50)
+                display_text("Click 'retry' for another go or 'Esc' to exit!", 500, 400, 35)
+                
+                
+                   
             if(question_index < len(list_of_questions) - 1):
                 question_index += 1
             else:
                 question_on_screen = font3.render("", True, black)
                 window.blit(question_on_screen, (130, 120))
-
+        
 
                 #!
                 #display_text("Final Score: " + str(number_correct) + "/" + str(len(list_of_questions)), 500, 300, 50)  
                 # ! 
+                test_if_end = True
+                window.fill(sand)
                 display_text("Congrats! You have won!", 500, 300, 50)
-
+                display_text("Click 'Esc' to exit", 500, 400, 35)
                 time.sleep(3)
-                run = False
+
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
