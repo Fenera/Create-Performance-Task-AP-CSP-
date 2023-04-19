@@ -4,6 +4,7 @@ import random
 import pygame_gui
 import time
 from Question import quest_ans
+import os
 
 #goals: get font to be corrected for each text placed on screen
 #clean up code and create comments
@@ -50,6 +51,12 @@ window = pygame.display.set_mode((length, height))
 
 #Caption
 pygame.display.set_caption("Testing")
+
+check_mark = pygame.image.load('check.png').convert_alpha()
+check_mark = pygame.transform.scale(check_mark,(25, 25))
+x_mark = pygame.image.load("incorrect.png").convert_alpha()
+x_mark = pygame.transform.scale(x_mark, (25, 25))
+
 #Initialize Font
 font1 = pygame.font.SysFont("arialrounded", 50)
 font3 = pygame.font.SysFont("arialrounded", 30)
@@ -81,6 +88,12 @@ list_of_answers = ["(a)Come to a complete stop | (b)Yield to oncoming traffic | 
 
 
 text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((70, 300), (700, 50)), manager = manager, object_id = "#main_text_entry")
+
+
+def x_or_checkmark(is_correct):
+    if(is_correct == True):
+        pass
+
 
 
 def check_correct(question, response):
