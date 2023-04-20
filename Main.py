@@ -53,9 +53,9 @@ window = pygame.display.set_mode((length, height))
 pygame.display.set_caption("Testing")
 
 check_mark = pygame.image.load('check.png').convert_alpha()
-check_mark = pygame.transform.scale(check_mark,(25, 25))
+check_mark = pygame.transform.scale(check_mark,(50, 50))
 x_mark = pygame.image.load("incorrect.png").convert_alpha()
-x_mark = pygame.transform.scale(x_mark, (25, 25))
+x_mark = pygame.transform.scale(x_mark, (50, 50))
 
 #Initialize Font
 font1 = pygame.font.SysFont("arialrounded", 50)
@@ -90,9 +90,25 @@ list_of_answers = ["(a)Come to a complete stop | (b)Yield to oncoming traffic | 
 text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((70, 300), (700, 50)), manager = manager, object_id = "#main_text_entry")
 
 
-def x_or_checkmark(is_correct):
-    if(is_correct == True):
-        pass
+def correct_img(x, y):
+    #timer for 1 second(1000 millisecond)
+    window.blit(check_mark, (x, y))
+    #timer_sec = pygame.time.get_ticks() + 1000
+    #while pygame.time.get_ticks() < timer_sec:
+     #   window.blit(check_mark, (x, y))
+    check_mark.set_alpha(0)
+
+
+
+def incorrect_img(x, y):    
+    #timer for 1 second(1000 millisecond)
+    window.blit(x_mark, (x, y))
+    #timer_sec = pygame.time.get_ticks() + 1000
+    #while pygame.time.get_ticks() < timer_sec:
+    #    window.blit(x_mark, (x, y))
+    x_mark.set_alpha(0)
+
+    
 
 
 
@@ -146,9 +162,11 @@ while run:
     window.fill(premium_gray)
     #Turquoise colored heading. Parameters = pygame.draw.rect(screen, [red, blue, green], [left, top, width, height], filled)
     turq_rect = pygame.draw.rect(window, r_gray, (0,0, length, 65), 0)
+    
     #Title
     text_title = font1.render("Driving for Dummies", True, black)
     window.blit(text_title, (length//2 - length//4.4, 6))
+    
 
 
 
@@ -192,10 +210,12 @@ while run:
                 text_input.set_text("")
                 #increments the list number_correct by 1 
                 #!
+                correct_img(5, 10)
                 number_correct += 1
                 #true if question has been answered
                 question_answered = True
             else:
+                incorrect_img(5, 10)
                 text_input.set_text("")
 
                 lives -= 1
@@ -211,6 +231,7 @@ while run:
                 test_if_end = True
                 lives = 0
                 window.fill(blooming_red)
+
                 display_text("You Lost! You need more review.", 500, 300, 50)
                 display_text("Click 'retry' for another go or 'Esc' to exit!", 500, 400, 35)
                 
