@@ -1,36 +1,34 @@
 import pygame
 import sys
-import random
 import pygame_gui
 import time
 from Question import quest_ans
 import os
 
-#goals: get font to be corrected for each text placed on screen
-#clean up code and create comments
-#possibly a menu page
-#scoreboard
-#timer
-#extraneous
-#complete by 4/25
+#correct a c a b c a b b c a a c b b 
+#incorrect b c b b c a b b c a
 
-
+#Initialize the pygame module/library(1), Initializes the font class in pygame(2)
 pygame.init()
-#pygame.font.init()
+pygame.font.init()
 
-#1. Create a seperate function that takes a question in 
-#2. Use that function to display the question using GUI
-#3. 
-
-
-print(os.getcwd())
+#This changes the directory of this python file to the file that it is being run out of(more portable from device to device)
+#It allows me to easily load images in this file just by their name(ex: 'dog.png' instead of the actual direct-
+# -ory of the image) 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-#Dimensions of the window
-length = 1000
-height = 600
+#Gets the dimensions/resolution of the screen the game is executed on
+#ex. a screen with a resolution of 1920x1080 would be the stored in screen_information
+screen_information = pygame.display.Info()
 
-#colors
+#length and height are set to the length and height of your screen(enables fullscreen usage)
+length = screen_information.current_w
+height = screen_information.current_h
+print(length)
+print(height)
+
+
+#initialize all colors I can use in my program 
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
@@ -47,30 +45,35 @@ victory_green = (122,186,122)
 blooming_red = (255,102,102)
 colors = [red, green, blue, white, black, sand, boring_orange, ocean_blue]
 
-#Creates window
-window = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+#Creates window/the box that the user interacts with
+window = pygame.display.set_mode((length,height), pygame.FULLSCREEN)
 
-#Caption
+#Caption of the window
 pygame.display.set_caption("Testing")
 
 
-
+#loads in two png images and scales them down for use in program
 check_mark = pygame.image.load("check.png").convert_alpha()
 check_mark = pygame.transform.scale(check_mark,(600, 600))
 x_mark = pygame.image.load("incorrect.png").convert_alpha()
 x_mark = pygame.transform.scale(x_mark, (600, 600))
 
-#Initialize Font
+#Initialize Fonts for later use using font class
+font_largest = pygame.font.SysFont("arialrounded", 65)
 font1 = pygame.font.SysFont("arialrounded", 50)
 font3 = pygame.font.SysFont("arialrounded", 30)
 font2 = pygame.font.SysFont("arialrounded,", 20)
 
+#Creates a ui manager to be used in text box
 manager = pygame_gui.UIManager((length, height))
 
+#create a FPS system so the game executes smoothely(Frames refreshed per second)
 clock = pygame.time.Clock()
 FPS = 60
 
 
+#This is a list of the answers that will be displayed on the screen
+#They correlate to the questions in the Question.py file
 list_of_answers = ["(a)Come to a complete stop | (b)Yield to oncoming traffic | (c)Drive through the intersection",
                    "(a)Drive through with caution | (b)Drive through quickly | (c)Do not attempt to drive through it",
                    "(a)30mph | (b)25mph | (c)20mph",
@@ -88,10 +91,12 @@ list_of_answers = ["(a)Come to a complete stop | (b)Yield to oncoming traffic | 
                    "(a)During the first rain after a dry spell | (b)After it has been raining for awhile | (c)During a heavy downpour"]
 
 
+#Create the textbox UI
+#parameters -> pygame_gui.elements.UITextEntryLine(rectangle, (length, height)), manager = what ever your manager is set to, object_id = "#name of the entry field")
+text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((80, 500), (1750, 100)), manager = manager, object_id = "#text_box_entry")
 
-text_input = pygame_gui.elements.UITextEntryLine(relative_rect = pygame.Rect((500, 500), (, 50)), manager = manager, object_id = "#main_text_entry")
 
-
+#If user got a correct answer, the a check mark will be shown with 0 transparency(255) and then become transparent(0)
 def correct_img(x, y):
     check_mark.set_alpha(255)
     #timer for 1 second(1000 millisecond)
@@ -103,7 +108,7 @@ def correct_img(x, y):
     return
 
 
-
+#If user got a incorrect answer, the an 'x' mark will be shown with 0 transparency(255) and then become transparent(0)
 def incorrect_img(x, y): 
     check_mark.set_alpha(255)   
     #timer for 1 second(1000 millisecond)
@@ -117,36 +122,26 @@ def incorrect_img(x, y):
     
 
 
-
+#This taxes in a question and what the user responded with and checks if their answer matches with 
+#the questions corresponding answer in the dictionary
 def check_correct(question, response):
     if(quest_ans[question].lower() == response.lower()):
         return True
-    
-def question_present():
-    pass
+   
 
-def get_fitting_size(text):
-    text_render = font1.render(text, True, ocean_blue)
-    rect_of_text = text_render.get_rect()
-    text_width = rect_of_text.width
-    while text_width > length - 100:
-        text_width -= 15
-    
-    return text_width
-
-
+#Displays text that the user enters at the specified location and its font size
 def display_text(text_display, x, y, size):
     while True:
+        #Creates a font with the font size parameter
+        #Text is rendered
+        #Creates a rectangle limit/boundary for the text with the center being x and y
         new_text = pygame.font.SysFont("arial", size).render(text_display, True, "black")
         new_text_rect = new_text.get_rect(center = (x ,y))
 
+        #displays that text
         window.blit(new_text, new_text_rect)
-        clock.tick(60)
-        for event in pygame.event.get():
-            #Program ends when 'x' pressed
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
+        
+        #updates the window after text is loaded on screen
         pygame.display.update()
 
 
@@ -161,22 +156,30 @@ lives = 3
 run = True
 test_if_end = False
 list_ans_index = 0
+question_number = 1
 
 while run:
     
     #background color
     window.fill(premium_gray)
     #Turquoise colored heading. Parameters = pygame.draw.rect(screen, [red, blue, green], [left, top, width, height], filled)
-    turq_rect = pygame.draw.rect(window, r_gray, (0,0, length, 65), 0)
+    turq_rect = pygame.draw.rect(window, r_gray, (0,0, length, 75), 0)
     
-    #Title
-    text_title = font1.render("Mock Driving Test", True, black)
-    window.blit(text_title, (length//2 - length//4.4, 6))
+    #Title of game created(1) then placed on screen(2)
+    text_title = font_largest.render("Mock Driving Test", True, black)
+    window.blit(text_title, (720, 28))
+
+    text_exit = font_largest.render("Esc = Exit", True, black)
+    window.blit(text_exit, (1700, 28))
+
+    #tip to user
+    text_tip = font3.render("*Enter the letter corresponding to the answer choice* Enter only the letters a, b, or c or else it will count as incorrect!", True, black)
+    window.blit(text_tip,(100, 600))
     
 
 
 
-
+    #The refresh rate of the text box
     refreshrate_ui = clock.tick(60)/750 #The /750 controls how fast the cursor blinks
 
 
@@ -184,19 +187,19 @@ while run:
     #UI_RR = clock.tick(60)/1000
 
     current_question = list_of_questions[question_index]
-    size_of_question = get_fitting_size(current_question)
+    
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     #correct_score = font2.render("Number Correct: " + str(number_correct), True, black)
     #incorrect_score = font2.render("Number Incorrect: " + str(number_incorrect), True, black)
     #window.blit(correct_score, (0,0))
     #window.blit(incorrect_score, (0, 35))
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    lives_display = font3.render("Chances: " + str(lives), True, black)
-    window.blit(lives_display, (5, 5))
+    lives_display = font1.render("Chances: " + str(lives), True, black)
+    window.blit(lives_display, (5, 28))
 
-    question_on_screen = font3.render(current_question, True, black)
-    answers_on_screen = font2.render(list_of_answers[list_ans_index], True, black)
-    window.blit(answers_on_screen, (70, 200))
+    question_on_screen = font_largest.render(str(question_number) + ". " + current_question, True, black)
+    answers_on_screen = font1.render(list_of_answers[list_ans_index], True, black)
+    window.blit(answers_on_screen, (70, 300))
     window.blit(question_on_screen, (70, 120))
     clock.tick(60)
     
@@ -210,17 +213,18 @@ while run:
                     test_if_end = True
                     run = False
        
-        if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#main_text_entry":
+        if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#text_box_entry":
             if(check_correct(current_question, event.text)):
+                correct_img(100, 100)
                 #Makes the textbox empty 
                 text_input.set_text("")
                 #increments the list number_correct by 1 
                 #!
-                correct_img(100, 100)
                 number_correct += 1
                 #true if question has been answered
                 question_answered = True
-            else:
+                question_number += 1
+            if(not(check_correct(current_question, event.text))):
                 incorrect_img(100, 100)
                 text_input.set_text("")
 
@@ -232,14 +236,14 @@ while run:
 
                 #true if question has been answered
                 question_answered = True
+                question_number += 1
 
             if(lives <= 0):
                 test_if_end = True
                 lives = 0
                 window.fill(blooming_red)
 
-                display_text("You Lost! You need more review.", 500, 300, 50)
-                display_text("Click 'retry' for another go or 'Esc' to exit!", 500, 400, 35)
+                display_text("You Failed! You need more review.", 900, 300, 100)
                 
                 
                    
@@ -256,16 +260,16 @@ while run:
                 # ! 
                 test_if_end = True
                 window.fill(victory_green)
-                display_text("Congratulations! You have passed your practice test", 300, 300, 50)
-                display_text("Click 'Esc' to exit", 500, 400, 35)
-                time.sleep(3)
+                display_text("Congratulations! You have passed your practice test", 900, 300, 100)
+
 
             #event.text is what the user wrote and entered
 
         manager.process_events(event)
-
+        
     
-
+        
+        
     
 
 
